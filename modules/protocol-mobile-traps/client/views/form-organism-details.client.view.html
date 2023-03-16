@@ -1,0 +1,66 @@
+<div class="modal fade" id="modal-organism-details-{{organismId}}" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="cancelFunction(organismId)" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" ng-bind="organismDetails.organism.commonName"></h4>
+            </div>
+            <form name="form.organismDetailsForm" ng-submit="submitForm(organismDetails, form.organismDetailsForm.$valid)" novalidate>
+                <div class="modal-body">
+                    <!--TODO:
+                    1) Hide below row and show this commented out row instead, if an Other/Unknown
+                    -->
+                    <div class="row" ng-show="organismDetails.organism.commonName === 'Other/Unknown'">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="alt-name">Name</label>
+                                <input type="text" class="form-control" id="alt-name" name="alt-name" ng-model="organismDetails.alternateName" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" ng-hide="organismDetails.organism.commonName === 'Other/Unknown'">
+                        <div class="col-sm-4">
+                            <p>
+                                <em class="text-muted" ng-bind="organismDetails.organism.latinName"></em><br />
+                                <span ng-bind="organismDetails.organism.description"></span><br />
+                                <span class="label label-default" ng-bind="organismDetails.organism.category"></span>
+                            </p>
+                            <img ng-src="{{organismDetails.organism.image.path}}" class="img-responsive" ng-show="organismDetails.organism.image" />
+                        </div>
+                        <div class="col-sm-8">
+                            <p ng-bind="organismDetails.organism.nativeIntroduced"></p>
+                            <p><b>Habitat:</b> {{organismDetails.organism.habitat}}</p>
+                            <p><b>Diet:</b> {{organismDetails.organism.diet}}</p>
+                            <p><b>Morphology notes:</b> {{organismDetails.organism.morphologyNotes}}</p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Add a sketch or photograph
+                                  {{(organismDetails.organism.commonName === 'Other/Unknown') ? '*' : ''}}</label>
+                                <single-image-drop-zone uploader="sketchPhotoUploader" image-url="sketchPhotoUrl"
+                                image-alt="Sketch or Photo" id="mobileTrapSketchPhoto-{{organismId}}"></single-image-drop-zone>
+                                <div ng-show="form.organismDetailsForm.$invalid && form.organismDetailsForm.$submitted &&
+                                !sketchPhotoUrl && organismDetails.organism.commonName === 'Other/Unknown'">
+                                    <p class="red">Sketch or photograph is required.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <label>Add notes or questions</label>
+                                <textarea class="form-control" rows="10" ng-model="organismDetails.notes"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" ng-click="cancelFunction(organismId)">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="mobileOrganismDetails-{{organismId}}">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

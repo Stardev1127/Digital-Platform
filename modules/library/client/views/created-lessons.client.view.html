@@ -1,0 +1,56 @@
+<div class="row" isotope-container="isotope-container-created" id="isotope-container-created" ng-cloak="">
+    <div ng-repeat="created in vm.createdLessons track by created._id" isotope-item="isotope-item-created"
+    class="col-xs-12 col-sm-6 col-md-4 col-lg-3 library-item">
+        <div class="panel-overlay" ng-show="created.status === 'published'">
+            <a class="btn btn-sm btn-primary pull-right" ng-show="created.status === 'published'"
+            ui-sref="lessons.edit({ lessonId: created._id })">
+              <i class="glyphicon glyphicon-pencil"></i></a>
+        </div>
+        <div class="panel-overlay" ng-show="created.status === 'draft'">
+            <a class="btn btn-sm btn-primary pull-right" ng-show="created.status === 'draft'"
+            ui-sref="lessons.draft({ lessonId: created._id })">
+              <i class="glyphicon glyphicon-pencil"></i></a>
+        </div>
+        <div class="panel" ui-sref="lessons.view({ lessonId: created._id })">
+            <div class="panel-heading" style="background: #fcfcfc; border-bottom-color: #ddd;">
+                <p class="panel-title" style="color: {{unit.color}}" ng-repeat="unit in created.units" ng-show="unit">
+                    <i class="{{unit.icon}}"></i>
+                    <b>{{unit.title}}</b>
+                </p>
+            </div>
+            <div class="panel-body">
+                <h4><b>{{created.title}}</b></h4>
+                <p class="text-muted">
+                    <small ng-show="created.lessonOverview.setting"><b>{{created.lessonOverview.setting}}</b> setting</small>
+                    <small ng-show="created.lessonOverview.setting && created.lessonOverview.grade" class="gray">&nbsp;&nbsp;|&nbsp;&nbsp;</small>
+                    <small ng-show="created.lessonOverview.grade"><b>{{created.lessonOverview.grade}}</b> grade</small>
+                </p>
+                <p class="small">
+                    <span ng-bind-html="created.lessonOverview.lessonSummary | limitTo:200 | sanitize"></span>
+                    <span ng-show="created.lessonOverview.lessonSummary.length > 200">...</span>
+                </p>
+                <img ng-show="created.featuredImage" ng-src="{{created.featuredImage.path}}" class="img-responsive" />
+            </div>
+            <div class="panel-footer">
+                <h6 ng-show="created.status === 'published'">Published</h6>
+                <h6 ng-show="created.status === 'draft'">Draft</h6>
+                <h6 ng-show="created.status === 'pending'" class="blue">Awaiting Approval</h6>
+                <h6 ng-show="created.status === 'returned'" class="red">Returned</h6>
+                <ul class="list-inline">
+                  <li ng-repeat="subject in created.lessonOverview.subjectAreas">
+                      <span ng-style="{'background-color':'{{subject.color}}'}" ng-bind="subject.subject"
+                      class="label label-default"></span>
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 library-item" isotope-item="isotope-item">
+        <div class="panel panel-default" ui-sref="lessons.create">
+            <div class="panel-body text-center text-muted">
+                <h1 class="glyphicon glyphicon-plus" aria-hidden="true"></h1>
+                <h4 class="list-group-item-heading">Create new lesson</h4>
+            </div>
+        </div>
+    </div>-->
+</div>

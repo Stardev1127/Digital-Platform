@@ -1,0 +1,11 @@
+Hi <%= FirstName %>,
+
+Registration is now full for <%= EventName %> on <%= EventDate %>.
+
+Visit <%= LinkEvent %> to open up registration again by editing the maximum capacity, or to see the list of registrants.
+
+Thanks!
+The Billion Oyster Project
+
+You are receiving this email because of your Billion Oyster Project account. Visit <%= LinkProfile %> to change your email account.
+Need help? Just respond to this email and we'll get back to you.

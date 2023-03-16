@@ -1,0 +1,126 @@
+<form name="form.mobileTrapForm" id="form.mobileTrapForm" ng-submit="save(form.mobileTrapForm.$valid)" novalidate ng-cloak>
+    <section class="content">
+        <section class="container">
+            <h2 id="protocol-3-form">Protocol 3 <small>Mobile Organisms</small></h2>
+            <ul>
+                <li>To publish this protocol, you need to record at least ONE mobile organism.</li>
+                <li>For reference, check out pages
+               45-50 in the
+                <a href="https://drive.google.com/drive/folders/0Bzf_STNcTtRmM2VubzJaM1dWZEU">Field Manual</a>.</li>
+            </ul>
+            <hr />
+            <div class="alert alert-danger" ng-show="mobileTrapErrors">
+                <h4>We're still missing some information.</h4>
+                <ul class="list-unstyled" ng-repeat="error in mobileTrapErrors">
+                    <li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error }}</li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="collectionTime">Date and time of data collection</label>
+                        <input type="datetime-local" class="form-control" name="collectionTime"
+                        placeholder="yyyy-MM-ddTHH:mm:ss" min="{{dateTime.min}}" max="{{dateTime.max}}"
+                        ng-model="mobileTrap.collectionTime" />
+                        <div ng-show="form.mobileTrapForm.collectionTime.$error.min">
+                            <p class="red">Collection time must not be more than a year in the past.</p>
+                        </div>
+                        <div ng-show="form.mobileTrapForm.collectionTime.$error.max">
+                            <p class="red">Collection time must not be more than a year in the future.</p>
+                        </div>
+                    </div>
+                    <!--
+                    <div class="form-group">
+                        <a class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-mobile-trap-map"
+                        ng-click="openMap()">Mark location on map</a>
+                        <input class="form-control" type="text" value="{{mobileTrap.latitude}}, {{mobileTrap.longitude}}"
+                        data-toggle="modal" data-target="#modal-mobile-trap-map" ng-click="openMap()"
+                        ng-show="mobileTrap.latitude && mobileTrap.longitude"
+                         readonly/>
+                    </div>
+                -->
+                    <div class="form-group">
+                        <select-tags outer-column="" name="teamMembers"
+                        in-title="Names of team members" ng-model="mobileTrap.teamMembers"
+                        label-class="control-label" select-config="teamMemberSelectConfig" ></select-tags>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Notes or other observations</label>
+                        <textarea class="form-control" rows="7" ng-model="mobileTrap.notes" ></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    <!--
+    <section class="content shaded">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="lead blue">Your group is responsible for observations about the types and quantities of mobile organisms found within the compartments of the mobile trap, one containing mesh and the other containing oyster shells.</p>
+                </div>
+
+                <div class="col-md-6">
+                    <h6>Mobile Organisms</h6>
+                    <p>We recommend first sorting organisms by type/class into separate containers, and then counting. Use a sieve to sort organisms by size. If a certain organism is found in large quantities in the trap (for example, tunicates) you can estimate the total population by splitting the organisms into subgroups, counting the individuals in one subgroup, then multiplying that number by the total number of groups.</p>
+                </div>
+            </div>
+        </section>
+    </section>
+    -->
+    <section class="content shaded">
+        <section class="container">
+            <nav class="navbar">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#" ng-click="clearFilters()">Show All</a></li>
+                    <li><a href="#" ng-click="clickFilter('fish')">Fish</a></li>
+                    <li><a href="#" ng-click="clickFilter('crustaceans')">Crustaceans</a></li>
+                    <li><a href="#" ng-click="clickFilter('worms')">Worms</a></li>
+                </ul>
+            </nav>
+            <div class="row" isotope-container="isotope-container-mobile-trap" id="isotope-container-mobile-trap">
+                <div class="col-md-3 col-sm-4" isotope-item="isotope-item-mobile-trap" ng-repeat="organism in mobileOrganisms track by organism._id" ng-show="organism.show">
+                    <div class="thumbnail" id="mobileOrganismForm-{{$index}}">
+                        <img ng-src="{{foundOrganisms[organism._id].sketchPhoto.path}}" class="img-responsive" ng-show="foundOrganisms[organism._id].sketchPhoto && foundOrganisms[organism._id].sketchPhoto.path"/>
+                        <img ng-src="{{organism.image.path}}" class="img-responsive" ng-show="organism.image && !foundOrganisms[organism._id].sketchPhoto.path"/>
+                        <h4 class="text-center" ng-bind="foundOrganisms[organism._id].alternateName" ng-show="foundOrganisms[organism._id].alternateName"></h4>
+                        <h4 class="text-center" ng-bind="organism.commonName" ng-hide="foundOrganisms[organism._id].alternateName"></h4>
+                        <div class="text-center">
+                            <div class="btn-group btn-group-xs">
+                                <button type="button" class="btn btn-default" ng-disabled="foundOrganisms[organism._id].count <= 0 || !foundOrganisms[organism._id]" ng-click="removeOrganism(organism)"><i class="glyphicon glyphicon-minus"></i></button>
+                                <b class="pull-left" ng-show="foundOrganisms[organism._id]" id="mobile-organism-count">&nbsp;{{foundOrganisms[organism._id].count}}&nbsp;</b>
+                                <b class="pull-left" ng-show="!foundOrganisms[organism._id]" id="empty-mobile-organism-count">&nbsp;0&nbsp;</b>
+                                <button type="button" class="btn btn-default" ng-click="addOrganism(organism)" organism-id="{{organism._id}}"><i class="glyphicon glyphicon-plus"></i></button>
+                            </div>
+                        </div>
+                        <p class="text-center" ng-show="organism.commonName === 'Other/Unknown'">
+                            <span ng-bind="foundOrganisms[organism._id].notes"></span>
+                        </p>
+                        <p class="text-center" ng-hide="organism.commonName === 'Other/Unknown'">
+                            <em class="text-muted" ng-bind="organism.latinName"></em><br />
+                            <span ng-bind="organism.description"></span>
+                        </p>
+                        <a href="#" class="btn btn-default btn-block" ng-click="openOrganismDetails(organism)"
+                        ng-disabled="foundOrganisms[organism._id].count <= 0 || !foundOrganisms[organism._id]">
+                        Add notes or an image {{(organism.commonName === 'Other/Unknown') ? '*' : ''}}</a>
+                        <!-- TODO: when notes/photo is added, show this instead
+                        <a href="#" class="btn btn-default btn-sm btn-block" data-toggle="modal" data-target="#modal-input">Edit notes or an image *</a>-->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</form>
+
+<!-- MODALS -->
+<map-select modal-id="modal-mobile-trap-map" latitude="mobileTrap.latitude"
+  longitude="mobileTrap.longitude" can-geocode="true" can-click-map-to-add-marker="true"
+  can-move-marker="true" show-marker="true" dismiss-function="closeMap"></map-select>
+
+<form-organism-details ng-repeat="organismDetails in foundOrganisms" organism-details="organismDetails"
+sketch-photo-uploader="organismDetails.uploader" sketch-photo-url="organismDetails.imageUrl"
+save-function="saveOrganismDetails" cancel-function="cancelOrganismDetails"
+organism-id="{{organismDetails.organism._id}}">
+</form-organism-details>

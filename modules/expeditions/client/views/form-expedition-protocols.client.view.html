@@ -1,0 +1,166 @@
+<section ng-cloak>
+    <section class="content shaded content-unpadded content-fixed">
+        <section class="container-fluid">
+            <div class="row">
+                <nav class="navbar">
+                    <a href="#" ui-sref="expeditions.view({ expeditionId: vm.expedition._id })"><h6 class="navbar-text blue" id="expedition-protocol-form">{{vm.expedition.name}}</h6></a>
+                    <h6 class="navbar-text">{{vm.getExpeditionDate(vm.expedition.monitoringStartDate)}}</h6>
+                    <h6 class="navbar-text"><i class="glyphicon glyphicon-map-marker"></i> {{vm.expedition.station.name}}</h6>
+                    <!--<h6 class="navbar-text"><i class="glyphicon glyphicon-user"></i> {{vm.user.displayName}}</h6>-->
+                    <div class="pull-right">
+                        <!-- If not published -->
+                        <button class="btn btn-default navbar-btn" ng-click="vm.saveDraft()"
+                        ng-show="vm.expedition.status !== 'published'">Save Draft</button>
+
+                        <!-- If never submitted (Status: Incomplete) --->
+                        <!-- Show if team member: -->
+                        <button class="btn btn-success navbar-btn" ng-click="vm.submitTeamMember()"
+                        ng-show="vm.checkStatusIncomplete() && (vm.isTeamMember || vm.isTeamLead || vm.isAdmin)" id="submit-exp-incomplete">Submit Protocols</button>
+
+                        <!--If submitted by team member (Status: Under Review) -->
+                        <!-- Show if team lead: -->
+                        <button class="btn btn-danger navbar-btn" ng-click="vm.openReturnModal()"
+                        ng-show="vm.checkAllSubmitted() && (vm.isTeamLead || vm.isAdmin)">Return Protocols</button>
+                        <!-- Show if team lead: -->
+                        <button class="btn btn-success navbar-btn" ng-click="vm.publish()"
+                        ng-show="vm.checkAllSubmitted() && (vm.isTeamLead || vm.isAdmin)">Publish Expedition</button>
+
+                        <!-- If returned by team lead (Status: Returned) -->
+                        <!-- Show if team member: -->
+                        <button class="btn btn-success navbar-btn" ng-click="vm.submitTeamMember()"
+                        ng-show="vm.checkStatusReturned() && (vm.isTeamMember || vm.isTeamLead || vm.isAdmin)" id="submit-exp-returned">Submit Protocols</button>
+
+                        <!-- If unpublished by team lead (Status: Unpublished) -->
+                        <!-- Show if team member: -->
+                        <button class="btn btn-success navbar-btn" ng-click="vm.submitTeamMember()"
+                        ng-show="vm.checkStatusUnpublished() && (vm.isTeamMember || vm.isTeamLead || vm.isAdmin)" id="submit-exp-unpublished">Submit Protocols</button>
+
+                        <!-- If published by team lead (Status: Published) -->
+                        <!-- Show if team lead: -->
+                        <!-- Show if team lead: -->
+                        <button class="btn btn-danger navbar-btn" ng-click="vm.unpublish()"
+                        ng-show="vm.checkAllStatus('published') && (vm.isTeamLead || vm.isAdmin)">Unpublish Expedition</button>
+
+                        <!-- Show saving when saving -->
+                        <h6 class="navbar-text green" id="saving-exp-spinner" ng-show="vm.saving"><i class="fa fa-circle-o-notch fa-spin fa-fw green"></i> Saving</h6>
+                        <h6 class="navbar-text green" id="submitting-exp-spinner" ng-show="vm.submitting"><i class="fa fa-circle-o-notch fa-spin fa-fw green"></i> Submitting protocols</h6>
+                        <h6 class="navbar-text green" id="returning-exp-spinner" ng-show="vm.returning"><i class="fa fa-circle-o-notch fa-spin fa-fw green"></i> Returning protocols</h6>
+                        <h6 class="navbar-text green" id="publishing-exp-spinner" ng-show="vm.publishing"><i class="fa fa-circle-o-notch fa-spin fa-fw green"></i> Publishing expedition</h6>
+                        <h6 class="navbar-text green" id="unpublishing-exp-spinner" ng-show="vm.unpublishing"><i class="fa fa-circle-o-notch fa-spin fa-fw green"></i> Unpublishing expedition</h6>
+
+                        <!-- If submitted by team member -->
+                        <!-- Show if team lead: -->
+                        <h6 class="navbar-text" ng-show="vm.checkStatusPending() && (vm.isTeamLead || vm.isAdmin)">Needs Review</h6>
+                        <!-- Show if team member: -->
+                        <h6 class="navbar-text" ng-show="vm.checkStatusPending() && vm.isTeamMember && !vm.isTeamLead">Submitted</h6>
+
+                        <!-- If returned by team lead -->
+                        <!-- Show if team lead: -->
+                        <h6 class="navbar-text" ng-show="vm.checkStatusIncomplete()">Incomplete</h6>
+                        <!-- Show if team member: -->
+                        <h6 class="navbar-text" ng-show="vm.checkStatusReturned()">Returned</h6>
+                        <!-- Show it team member: -->
+                        <h6 class="navbar-text" ng-show="vm.checkStatusUnpublished()">Unpublished</h6>
+
+                        <!-- If published by team lead -->
+                        <h6 class="navbar-text" ng-show="vm.checkAllStatus('published')">Published</h6>
+                    </div>
+                </nav>
+            </div>
+        </section>
+        <ul class="nav nav-tabs nav-justified" role="tablist" ng-cloak>
+            <li id="protocol1tab" role="presentation" ng-disabled="vm.tabs.protocol1.isDisabled" ng-class="{'active': vm.tabs.protocol1.isActive === true}"
+            ng-show="vm.viewSiteCondition" ng-click="vm.switchTabs('protocol1')">
+              <a href="#protocol1" data-toggle="tab" aria-controls="protocol1" role="tab">
+              <i class="glyphicon glyphicon-exclamation-sign red" ng-show="vm.tabs.protocol1.saveSuccessful === false"></i>
+              <i class="glyphicon glyphicon-ok-sign green" ng-show="vm.tabs.protocol1.saveSuccessful === true"></i>
+              <!--<i class="glyphicon glyphicon-exclamation-sign gray" ng-hide="vm.tabs.protocol1.saveSuccessful === true ||
+                vm.tabs.protocol1.saveSuccessful === false"></i>-->
+              <span class="hidden-xs">Protocol </span>1<span class="hidden-xs">: Site Conditions</span></a>
+            </li>
+            <li id="protocol2tab" role="presentation" ng-class="{'active': vm.tabs.protocol2.isActive === true}"
+            ng-show="vm.viewOysterMeasurement" ng-disabled="vm.tabs.protocol2.isDisabled" ng-click="vm.switchTabs('protocol2')">
+              <a href="#protocol2" data-toggle="tab" aria-controls="protocol2" role="tab">
+                <i class="glyphicon glyphicon-exclamation-sign red" ng-show="vm.tabs.protocol2.saveSuccessful === false"></i>
+                <i class="glyphicon glyphicon-ok-sign green" ng-show="vm.tabs.protocol2.saveSuccessful === true"></i>
+                <!--<i class="glyphicon glyphicon-exclamation-sign gray" ng-hide="vm.tabs.protocol2.saveSuccessful === true ||
+                vm.tabs.protocol2.saveSuccessful === false"></i>-->
+              <span class="hidden-xs">Protocol </span>2<span class="hidden-xs">: Oyster Measurements</span></a>
+            </li>
+            <li id="protocol3tab" role="presentation" ng-class="{'active': vm.tabs.protocol3.isActive === true}"
+            ng-show="vm.viewMobileTrap" ng-disabled="vm.tabs.protocol3.isDisabled" ng-click="vm.switchTabs('protocol3')">
+              <a href="#protocol3" data-toggle="tab" aria-controls="protocol3" role="tab" ng-click="vm.refreshTiles()">
+                <i class="glyphicon glyphicon-exclamation-sign red" ng-show="vm.tabs.protocol3.saveSuccessful === false"></i>
+                <i class="glyphicon glyphicon-ok-sign green" ng-show="vm.tabs.protocol3.saveSuccessful === true"></i>
+                <!--<i class="glyphicon glyphicon-exclamation-sign gray" ng-hide="vm.tabs.protocol3.saveSuccessful === true ||
+                vm.tabs.protocol3.saveSuccessful === false"></i>-->
+              <span class="hidden-xs">Protocol </span>3<span class="hidden-xs">: Mobile Organisms</span></a>
+            </li>
+            <li id="protocol4tab" role="presentation" ng-class="{'active': vm.tabs.protocol4.isActive === true}"
+            ng-show="vm.viewSettlementTiles" ng-disabled="vm.tabs.protocol4.isDisabled" ng-click="vm.switchTabs('protocol4')">
+              <a href="#protocol4" data-toggle="tab" aria-controls="protocol4" role="tab">
+                <i class="glyphicon glyphicon-exclamation-sign red" ng-show="vm.tabs.protocol4.saveSuccessful === false"></i>
+                <i class="glyphicon glyphicon-ok-sign green" ng-show="vm.tabs.protocol4.saveSuccessful === true"></i>
+                <!--<i class="glyphicon glyphicon-exclamation-sign gray" ng-hide="vm.tabs.protocol4.saveSuccessful === true ||
+                vm.tabs.protocol4.saveSuccessful === false"></i>-->
+              <span class="hidden-xs">Protocol </span>4<span class="hidden-xs">: Sessile Organisms</span></a>
+            </li>
+            <li id="protocol5tab" role="presentation" ng-class="{'active': vm.tabs.protocol5.isActive === true}"
+            ng-show="vm.viewWaterQuality" ng-disabled="vm.tabs.protocol5.isDisabled" ng-click="vm.switchTabs('protocol5')">
+              <a href="#protocol5" data-toggle="tab" aria-controls="protocol5" role="tab">
+                <i class="glyphicon glyphicon-exclamation-sign red" ng-show="vm.tabs.protocol5.saveSuccessful === false"></i>
+                <i class="glyphicon glyphicon-ok-sign green" ng-show="vm.tabs.protocol5.saveSuccessful === true"></i>
+                <!--<i class="glyphicon glyphicon-exclamation-sign gray" ng-hide="vm.tabs.protocol5.saveSuccessful === true ||
+                vm.tabs.protocol5.saveSuccessful === false"></i>-->
+              <span class="hidden-xs">Protocol </span>5<span class="hidden-xs">: Water Quality</span></a>
+            </li>
+        </ul>
+    </section>
+    <div class="tab-content" ng-cloak>
+        <div role="tabpanel" class="tab-pane" ng-class="{'active': vm.tabs.protocol1.isActive === true}"
+        id="protocol1" ng-show="vm.viewSiteCondition">
+            <form-protocol-site-condition ng-cloak></form-protocol-site-condition>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{'active': vm.tabs.protocol2.isActive === true}"
+        id="protocol2" ng-show="vm.viewOysterMeasurement">
+            <form-protocol-oyster-measurement ng-cloak></form-protocol-oyster-measurement>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{'active': vm.tabs.protocol3.isActive === true}"
+        id="protocol3" ng-show="vm.viewMobileTrap">
+            <form-protocol-mobile-trap ng-cloak></form-protocol-mobile-trap>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{'active': vm.tabs.protocol4.isActive === true}"
+        id="protocol4" ng-show="vm.viewSettlementTiles">
+            <form-protocol-settlement-tiles ng-cloak></form-protocol-settlement-tiles>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{'active': vm.tabs.protocol5.isActive === true}"
+        id="protocol5" ng-show="vm.viewWaterQuality">
+            <form-protocol-water-quality ng-cloak></form-protocol-water-quality>
+        </div>
+    </div>
+    <section class="content">
+      <section class="container">
+        <div ng-show="vm.tabs.protocol1.isActive === true" class="text-danger">
+          <strong ng-bind="vm.tabs.protocol1.error"></strong>
+        </div>
+        <div ng-show="vm.tabs.protocol2.isActive === true" class="text-danger">
+          <strong ng-bind="vm.tabs.protocol2.error"></strong>
+        </div>
+        <div ng-show="vm.tabs.protocol3.isActive === true" class="text-danger">
+          <strong ng-bind="vm.tabs.protocol3.error"></strong>
+        </div>
+        <div ng-show="vm.tabs.protocol4.isActive === true" class="text-danger">
+          <strong ng-bind="vm.tabs.protocol4.error"></strong>
+        </div>
+        <div ng-show="vm.tabs.protocol5.isActive === true" class="text-danger">
+          <strong ng-bind="vm.tabs.protocol5.error"></strong>
+        </div>
+      </section>
+    </section>
+</section>
+
+<!-- modals -->
+<remove-protocol-tab-modal changes="vm.disableProtocolChanges"></remove-protocol-tab-modal>
+<save-draft-progress-bar value="finishedSaving" status="savingStatus" show-close="true"></save-draft-progress-bar>
+<return-expedition-modal save-function="vm.submitReturnModal" cancel-function="vm.cancelReturnModal">
+  </return-expedition-modal>

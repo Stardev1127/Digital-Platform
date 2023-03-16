@@ -1,0 +1,10 @@
+Hi <%= FirstName %>,
+
+Thanks for joining the Billion Oyster Project! Currently, your new organization request for <%= OrgName %> is pending admin approval. We'll send you a confirmation as soon as your organization is approved!
+
+We're glad to have you!
+The Billion Oyster Project
+
+You are receiving this email because of your Billion Oyster Project account. Visit <%= LinkProfile %> to change your email account.
+Need help? Just respond to this email and we'll get back to you.
+

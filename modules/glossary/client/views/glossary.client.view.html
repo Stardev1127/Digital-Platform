@@ -1,0 +1,65 @@
+<div class="jumbotron text-center">
+    <section class="content">
+        <section class="container">
+            <h2>Glossary</h2>
+            <div class="input-group col-md-6 col-md-offset-3">
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span><!-- TODO: Need to wire up search and filters-->
+                </span>
+                <input type="text" class="form-control" ng-model="vm.filter.searchString" ng-change="vm.searchChange()"
+                placeholder="Search for a vocabulary term...">
+            </div>
+            <div class="alert alert-danger text-center" ng-show="vm.error">
+              <p ng-bind="vm.error"></p>
+            </div>
+            <div class="alert alert-info text-center" ng-show="vm.glossary.length === 0 && vm.filter.searchString !== '' && !vm.error">
+                Sorry, no results found for that search term
+            </div>
+        </section>
+    </section>
+</div>
+<section class="content">
+    <section class="container">
+        <nav class="navbar">
+            <ul class="nav navbar-nav"><!--TODO: Wire up sorts-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Sort <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                       <li><a ng-click="vm.sortChange('')">Alphabetical</a></li>
+                       <li><a ng-click="vm.sortChange('date')">Date</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <a class="btn btn-primary pull-right" ng-click="vm.openAddEdit()" view-permissions="admin,team lead">Add a vocabulary term</a>
+        </nav>
+        <table class="table">
+            <tr ng-repeat="term in vm.pagedItems">
+                <td><h4 ng-bind="term.term" class="nobreak"></h4><td>
+                <td><p class="text-muted" ng-bind="term.definition"></p></td>
+                <td class="text-right col-md-2">
+                    <a class="btn btn-primary" title="See uses" ng-click="vm.goToLesson(term)">
+                      <i class="glyphicon glyphicon-search"></i>
+                    </a>
+                    <a class="btn btn-default" ng-click="vm.openAddEdit(term)" ng-show="term.isCurrentUserOwner || vm.hasRole('admin')">
+                      <i class="glyphicon glyphicon-edit"></i>
+                    </a>
+                    <a class="btn btn-danger" ng-click="vm.openDelete(term)" ng-show="term.isCurrentUserOwner || vm.hasRole('admin')">
+                      <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div>
+          <uib-pagination boundary-links="true" max-size="8" items-per-page="vm.itemsPerPage" total-items="vm.glossary.length" ng-model="vm.currentPage" ng-change="vm.pageChanged()"></uib-pagination>
+        </div>
+    </section>
+</section>
+
+
+<!-- MODALS -->
+<form-term-modal term="vm.term" save-function="vm.saveTerm" cancel-function="vm.cancelTermAddEdit"></form-term-modal>
+<delete-term-modal term="vm.term" save-function="vm.deleteTerm" cancel-function="vm.cancelTermDelete"></delete-term-modal>
+
+<!-- END OF MODALS -->

@@ -1,0 +1,15 @@
+Hi <%=FirstName%>,
+
+Congrats, your poster <%= PosterName %> was approved and is now published! You can now find it in the Research section, and can edit it at any time.
+
+View your poster at <%= LinkPoster %>.
+
+And don't forget- you can always get help with the platform via the BOP Digital Platform Quick Guide: https://www.arcgis.com/apps/MapJournal/index.html?appid=64589a40aed54de69ea6ffab01a0868f
+
+...or our wiki: https://github.com/BillionOysterProject/docs/wiki/Digital-Platform-User-Guide-Table-of-Contents
+
+Thanks for your contribution!
+The Billion Oyster Project
+
+You are receiving this email because of your Billion Oyster Project account. Visit <%= LinkProfile %> to change your email account.
+Need help? Just respond to this email and we'll get back to you.

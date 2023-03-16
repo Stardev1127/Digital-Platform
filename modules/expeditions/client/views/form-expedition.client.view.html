@@ -1,0 +1,216 @@
+<form name="vm.form.expeditionForm" ng-submit="vm.save(vm.form.expeditionForm.$valid)" novalidate>
+    <section class="content shaded">
+        <section class="container">
+            <div class="page-header">
+                <h1>{{vm.expedition._id ? 'Edit expedition' : 'Create an expedition'}}</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="name" required>Name your expedition *</label>
+                        <input type="text" class="form-control" name="name" ng-model="vm.expedition.name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="team" required>Select a team *</label>
+                        <select class="form-control" ng-model="vm.teamId" ng-change="vm.fieldChanged(team)"
+                        ng-options="team._id as team.name for team in vm.teams" name="team" id="team" required>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="station" required>Select an ORS *</label>
+                        <select class="form-control" ng-model="vm.stationId" name="station" id="station"
+                          ng-options="station._id as station.name for station in vm.stations" required>
+                        </select>
+                        <a ng-click="vm.openFormRestorationStation()" id="register-first-ORS">Register an ORS</a>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="startTime" required>Start time *</label>
+                            <input type="datetime-local" class="form-control" name="startTime"
+                            placeholder="yyyy-MM-ddTHH:mm:ss" min="{{vm.dateTime.min}}" max="{{vm.dateTime.max}}"
+                            ng-model="vm.expedition.monitoringStartDate" required/>
+                            <div ng-show="vm.form.expeditionForm.startTime.$error.min">
+                                <p class="red">Start time must not be more than a year in the past.</p>
+                            </div>
+                            <div ng-show="vm.form.expeditionForm.startTime.$error.max">
+                                <p class="red">Start time must not be more than a year in the future.</p>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="endTime" required>Stop time *</label>
+                            <input type="datetime-local" class="form-control" name="endTime"
+                            placeholder="yyyy-MM-ddTHH:mm:ss" min="{{vm.dateTime.min}}" max="{{vm.dateTime.max}}"
+                            ng-model="vm.expedition.monitoringEndDate" required/>
+                            <div ng-show="vm.form.expeditionForm.endTime.$error.min">
+                                <p class="red">Stop time must not be more than a year in the past.</p>
+                            </div>
+                            <div ng-show="vm.form.expeditionForm.endTime.$error.max">
+                                <p class="red">Stop time must not be more than a year in the future.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Special Instructions</label>
+                        <textarea class="form-control" rows="5" name="notes" ng-model="vm.expedition.notes"></textarea>
+                    </div>
+                </div>
+        </section>
+    </section>
+    <section class="content">
+        <section class="container">
+            <!--TODO: Wire up code. All should be selected on default. Unselecting checkboxes should instantly remove the corresponding "assign to protocol" columns
+
+            Other places that should also be updated with the less-than-5 protocol feature:
+              - Expedition View
+              - Protocol Tabs in Expedition Protocol Form
+              - Expedition List page?
+              - Saving draft modal progress bar text
+              - Published Expedition View
+              - Compare Expedition View (only display protocols available even if protocols are checked as parameters?)
+              ... anywhere else all 5 protocols are listed
+            -->
+
+            <h4>Select protocols to include:</h4>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.protocolsPresent.siteCondition" ng-click="vm.changeProtocol('siteCondition')"> <b>Protocol 1:</b> Site Conditions</label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.protocolsPresent.oysterMeasurement" ng-click="vm.changeProtocol('oysterMeasurement')"> <b>Protocol 2:</b> Oyster Measurements</label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.protocolsPresent.mobileTrap" ng-click="vm.changeProtocol('mobileTrap')"> <b>Protocol 3:</b> Mobile Organisms</label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.protocolsPresent.settlementTiles" ng-click="vm.changeProtocol('settlementTiles')"> <b>Protocol 4:</b> Sessile Organisms</label>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="checkbox">
+                        <label><input type="checkbox" ng-model="vm.protocolsPresent.waterQuality" ng-click="vm.changeProtocol('waterQuality')"> <b>Protocol 5:</b> Water Quality</label>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+
+            <h4>Assign members to protocols *
+                <!--TODO: Doesn't seem like this button should be distributing the team lead's name.. -->
+                <button type="button" class="btn btn-default btn-sm" ng-click="vm.autoAssign()" id="autoassign">Auto Assign</button>
+            </h4>
+            <span class="help-block">Note: Students assigned to the same protocol will share the same data entry form. To prevent duplicates or overwriting, they should select one person to input their group data.</span>
+
+            <div class="row">
+              <div class="col-md-2 scroll" dnd-list="vm.memberLists.members"
+              dnd-drop="vm.onDrop(vm.memberLists.members, item)">
+                <a ng-repeat="item in vm.memberLists.members" class="draggable" dnd-draggable="item"
+                 dnd-moved="" dnd-effect-allowed="move"
+                 dnd-selected="vm.memberLists.selected = item" ng-class="{'selected': vm.memberLists.selected === item}">
+                  <img ng-src="{{item.profileImageURL}}" class="header-profile-image"> {{item.displayName}}</a>
+              </div>
+              <div class="col-md-10">
+                <div class="panel panel-default">
+                  <table class="table">
+                    <tr>
+                      <td ng-show="vm.protocolsPresent.siteCondition"><h6>Protocol 1</h6><br /> Site Conditions</td>
+                      <td ng-show="vm.protocolsPresent.oysterMeasurement"><h6>Protocol 2</h6><br /> Oyster Measurements</td>
+                      <td ng-show="vm.protocolsPresent.mobileTrap"><h6>Protocol 3</h6><br /> Mobile Organisms</td>
+                      <td ng-show="vm.protocolsPresent.settlementTiles"><h6>Protocol 4</h6><br /> Sessile Organisms</td>
+                      <td ng-show="vm.protocolsPresent.waterQuality"><h6>Protocol 5</h6><br /> Water Quality</td>
+                    </tr>
+                    <tr>
+                      <td class="dragdrop" ng-show="vm.protocolsPresent.siteCondition">
+                        <div class="droppable" dnd-list="vm.expedition.teamLists.siteCondition"
+                        dnd-drop="vm.onDrop(vm.expedition.teamLists.siteCondition, item)">
+                          <a ng-repeat="item in vm.expedition.teamLists.siteCondition" class="draggable" dnd-draggable="item"
+                            dnd-moved="vm.expedition.teamLists.siteCondition.splice($index,1)" dnd-effect-allowed="move"
+                            dnd-selected="vm.memberLists.selected = item" ng-class="{'selected': vm.memberLists.selected === item}">
+                            <button type="button" class="close" aria-label="Removed"
+                            ng-click="vm.expedition.teamLists.siteCondition.splice($index,1)"><span aria-hidden="true">&times;</span></button>
+                            <img ng-src="{{item.profileImageURL}}" class="header-profile-image"> {{item.displayName}}</a>
+                        </div>
+                      </td>
+                      <td class="dragdrop" ng-show="vm.protocolsPresent.oysterMeasurement">
+                        <div class="droppable" dnd-list="vm.expedition.teamLists.oysterMeasurement"
+                        dnd-drop="vm.onDrop(vm.expedition.teamLists.oysterMeasurement, item)">
+                          <a ng-repeat="item in vm.expedition.teamLists.oysterMeasurement" class="draggable" dnd-draggable="item"
+                            dnd-moved="vm.expedition.teamLists.oysterMeasurement.splice($index,1)" dnd-effect-allowed="move"
+                            dnd-selected="vm.memberLists.selected = item" ng-class="{'selected': vm.memberLists.selected === item}">
+                            <button type="button" class="close" aria-label="Removed"
+                            ng-click="vm.expedition.teamLists.oysterMeasurement.splice($index,1)"><span aria-hidden="true">&times;</span></button>
+                            <img ng-src="{{item.profileImageURL}}" class="header-profile-image"> {{item.displayName}}</a>
+                        </div>
+                      </td>
+                      <td class="dragdrop" ng-show="vm.protocolsPresent.mobileTrap">
+                        <div class="droppable" dnd-list="vm.expedition.teamLists.mobileTrap"
+                        dnd-drop="vm.onDrop(vm.expedition.teamLists.mobileTrap, item)">
+                          <a ng-repeat="item in vm.expedition.teamLists.mobileTrap" class="draggable" dnd-draggable="item"
+                            dnd-moved="vm.expedition.teamLists.mobileTrap.splice($index,1)" dnd-effect-allowed="move"
+                            dnd-selected="vm.memberLists.selected = item" ng-class="{'selected': vm.memberLists.selected === item}">
+                            <button type="button" class="close" aria-label="Removed"
+                            ng-click="vm.expedition.teamLists.mobileTrap.splice($index,1)"><span aria-hidden="true">&times;</span></button>
+                            <img ng-src="{{item.profileImageURL}}" class="header-profile-image"> {{item.displayName}}</a>
+                        </div>
+                      </td>
+                      <td class="dragdrop" ng-show="vm.protocolsPresent.settlementTiles">
+                        <div class="droppable" dnd-list="vm.expedition.teamLists.settlementTiles"
+                        dnd-drop="vm.onDrop(vm.expedition.teamLists.settlementTiles, item)">
+                          <a ng-repeat="item in vm.expedition.teamLists.settlementTiles" class="draggable" dnd-draggable="item"
+                            dnd-moved="vm.expedition.teamLists.settlementTiles.splice($index,1)" dnd-effect-allowed="move"
+                            dnd-selected="vm.memberLists.selected = item" ng-class="{'selected': vm.memberLists.selected === item}">
+                            <button type="button" class="close" aria-label="Removed"
+                            ng-click="vm.expedition.teamLists.settlementTiles.splice($index,1)"><span aria-hidden="true">&times;</span></button>
+                            <img ng-src="{{item.profileImageURL}}" class="header-profile-image"> {{item.displayName}}</a>
+                        </div>
+                      </td>
+                      <td class="dragdrop" ng-show="vm.protocolsPresent.waterQuality">
+                        <div class="droppable" dnd-list="vm.expedition.teamLists.waterQuality"
+                        dnd-drop="vm.onDrop(vm.expedition.teamLists.waterQuality, item)">
+                          <a ng-repeat="item in vm.expedition.teamLists.waterQuality" class="draggable" dnd-draggable="item"
+                            dnd-moved="vm.expedition.teamLists.waterQuality.splice($index,1)" dnd-effect-allowed="move"
+                            dnd-selected="vm.memberLists.selected = item" ng-class="{'selected': vm.memberLists.selected === item}">
+                            <button type="button" class="close" aria-label="Removed"
+                            ng-click="vm.expedition.teamLists.waterQuality.splice($index,1)"><span aria-hidden="true">&times;</span></button>
+                            <img ng-src="{{item.profileImageURL}}" class="header-profile-image"> {{item.displayName}}</a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-danger" ng-show="vm.form.expeditionForm.$invalid && vm.form.expeditionForm.$submitted">
+                <h4>Sorry, you can't submit just yet!</h4>
+                <ul ng-messages="vm.form.expeditionForm.$error" class="list-unstyled" ng-repeat="(key, errors) in vm.form.expeditionForm.$error track by $index">
+                    <li ng-message="required"><i class="glyphicon glyphicon-remove-sign"></i> <b>{{ errors[$index].$name }}</b> is required.</li>
+                    <li ng-message="lists"><i class="glyphicon glyphicon-remove-sign"></i> Every protocol needs at least one person assigned to it. Try using auto assign.</li>
+                </ul>
+            </div>
+        </section>
+    </section>
+    <section class="content shaded">
+        <section class="container">
+            <div class="form-group" ng-show="vm.expedition._id">
+              <input type="checkbox" ng-model="vm.expedition.sendUpdatedEmail"/>
+              <label class="control-label">Send another email to team members?</label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" id="launchexpedition">{{vm.expedition._id ? 'Update' : 'Launch'}}</button>
+                <button type="button" class="btn btn-danger pull-right" ng-show="vm.expedition._id" ng-click="vm.openDeleteExpedition()">Delete</button>
+            </div>
+        </section>
+    </section>
+</form>
+
+<!-- MODALS -->
+<delete-expedition-modal callback-function="vm.confirmDeleteExpedition"></delete-expedition-modal>
+<view-restoration-station-popup station="vm.station" initial="vm.initial" close-function="vm.closeFormRestorationStation"></view-restoration-station-popup>
+<!--END MODALS-->

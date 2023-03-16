@@ -1,0 +1,44 @@
+<div class="jumbotron text-center">
+    <section class="content">
+        <section class="container">
+            <h2>Submissions</h2>
+        </section>
+    </section>
+</div>
+<section class="content">
+    <section class="container">
+        <table class="table table-hover" ng-show="vm.activities && vm.activities.length > 0">
+            <thead>
+                <tr>
+                    <th>Assignment</th>
+                    <th>Expedition</th>
+                    <th>Name</th>
+                    <th class="text-right">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="activity in vm.activities"
+                  ui-sref="expeditions.view({ expeditionId: activity.expedition._id })">
+                    <td><h4>{{vm.displaySubmittedProtocols(activity)}}</h4></td>
+                    <td>{{activity.expedition.name}}<br/><small>{{vm.getExpeditionDate(activity.expedition.monitoringStartDate)}}</small></td>
+                    <td><img ng-src="{{activity.user.profileImageURL}}" class="header-profile-image">
+                      <b>{{activity.user.displayName}}</b><br/><p class="text-muted">{{activity.team.name}}</p></td>
+                    <td class="text-right">
+                        <!-- TODO: Wire up ability to see non-submitted submissions
+                        <span class="label label-default" ng-show="vm.isUpcoming(activity.expedition)">Coming up</span>
+                        -->
+                        <span class="label label-danger" ng-show="activity.expedition.status === 'incomplete' || activity.expedition.status === 'returned'">Incomplete</span>
+                        <span class="label label-danger" ng-show="activity.expedition.status === 'pending'">Needs Review</span>
+                        <span class="label label-success" ng-show="activity.expedition.status === 'published'">Published</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="alert" ng-show="vm.activities && vm.activities.length === 0 && vm.teams && vm.teams.length > 0">
+          No expeditions submitted yet! Why don't you <a ui-sref="expeditions.create">create one</a>?
+        </div>
+        <div class="alert" ng-show="vm.activities && vm.activities.length === 0 && (!vm.teams || vm.teams.length === 0)">
+          You don't have any teams yet! <a class="btn btn-default" ui-sref="profiles.team">Add members</a>
+        </div>
+    </section>
+</section>

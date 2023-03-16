@@ -1,0 +1,67 @@
+Hi <%=FirstName%>,
+
+<%= LessonFeedbackName %> just gave you feedback on your lesson <%= LessonName %>:
+
+On a scale of 1-5, with 5 being very effective and 1 being not effective at all, rate the following:
+How effective is this lesson? <%= LessonEffective %>
+How effectively does this lesson align with NY State core curriculum, NYC scope and sequence, and/or other content standards you are required to use in your school? <%= LessonAlignWithCurriculumn %>
+How effectively does this lesson support inquiry, student-led research, and/or scientific practices? <%= LessonSupportScientificPractice %>
+How effectively does this lesson prepare students for environmental restoration, BOP field science, or the ORS? <%= LessonPreparesStudents %>
+
+<% if(HowLessonTaught !== '') { %>
+Describe what you did and what your students did in this lesson. Did you modify or adapt this lesson? Give specific examples of what you and your students did in the lesson:
+<%= HowLessonTaught %>
+<% } %>
+<% if(WhyLessonTaughtNow !== '') { %>
+Why did you teach this lesson when you did? Was it part of your regular scheduled curriculum, one-off, or prep for the field?
+<%= WhyLessonTaughtNow %>
+<% } %>
+<% if(WillTeachLessonAgain !== '') { %>
+Will you teach some version of this lesson in the future? If so, what will you repeat, what will you do differently, and why? If not, why not?
+<%= WillTeachLessonAgain %>
+<% } %>
+
+<% if(LessonSummary !== '') { %>
+Lesson Summary:
+<%= LessonSummary %>
+<% } %>
+<% if(LessonObjectives !== '') { %>
+Lesson Objectives:
+<%= LessonObjectives %>
+<% } %>
+<% if(MaterialsResources !== '') { %>
+Materials and Resources:
+<%= MaterialsResources %>
+<% } %>
+<% if(Preparation !== '') { %>
+Preparation:
+<%= Preparation %>
+<% } %>
+<% if(Background !== '') { %>
+Background:
+<%= Background %>
+<% } %>
+<% if(InstructionPlan !== '') { %>
+Instruction Plan:
+<%= InstructionPlan %>
+<% } %>
+<% if(Standards !== '') { %>
+Standards:
+<%= Standards %>
+<% } %>
+<% if(Other !== '') { %>
+Other:
+<%= Other %>
+<% } %>
+
+You can visit your lesson at <%= LinkLesson %> to edit and republish at any time.
+
+And don't forget- you can always get help with the platform via the BOP Digital Platform Quick Guide: https://www.arcgis.com/apps/MapJournal/index.html?appid=64589a40aed54de69ea6ffab01a0868f
+
+...or our wiki: https://github.com/BillionOysterProject/docs/wiki/Digital-Platform-User-Guide-Table-of-Contents
+
+Thanks!
+The Billion Oyster Project
+
+You are receiving this email because of your Billion Oyster Project account. Visit <%= LinkProfile %> to change your email account.
+Need help? Just respond to this email and we'll get back to you.

@@ -1,0 +1,26 @@
+Hi <%= FirstName %>,
+
+Congrats, your request to be a Team Lead was approved! You're on your way to conducting your first Oyster Research Station monitoring expedition.  Here's what you'll need to do to get started:
+
+*Register your Oyster Research Station: http://platform.bop.nyc/restoration/stations
+*Create your team and add team leads (adults) or team members (students): https://platform.bop.nyc/profiles/team
+*Create an expedition: https://platform.bop.nyc/expeditions
+
+For step-by-step directions, visit our Get Started Guide: https://github.com/BillionOysterProject/docs/wiki/Get-Started-for-Team-Leads-(Teachers-and-Scientists)
+
+Now that your account has been approved, you can also:
+*Create lessons: http://platform.bop.nyc/lessons
+*Favorite, log, and give feedback on lessons: http://platform.bop.nyc/lessons
+*Create and favorite research posters: http://platform.bop.nyc/research
+
+You can explore these features and more with a quick scroll through the BOP Digital Platform Quick Guide: https://www.arcgis.com/apps/MapJournal/index.html?appid=64589a40aed54de69ea6ffab01a0868f   
+
+For extra help, visit our wiki: https://github.com/BillionOysterProject/docs/wiki/Digital-Platform-User-Guide-Table-of-Contents
+
+You can login at <%= LinkLogin %>.
+
+We're glad to have you!
+The Billion Oyster Project
+
+You are receiving this email because of your Billion Oyster Project account. Visit <%= LinkProfile %> to change your email account.
+Need help? Just respond to this email and we'll get back to you.

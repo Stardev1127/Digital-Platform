@@ -1,0 +1,51 @@
+<div>
+<div class="row" isotope-container="isotope-container-submitted" id="isotope-container-submitted" ng-cloak="" >
+    <div ng-repeat="submitted in sub.submittedLessons track by submitted._id" isotope-item="isotope-item-submitted"
+    class="col-xs-12 col-sm-6 col-md-4 col-lg-3 library-item">
+        <div class="panel-overlay">
+            <a class="btn btn-sm btn-primary pull-right" ui-sref="lessons.edit({ lessonId: submitted._id })">
+                <i class="glyphicon glyphicon-pencil"></i></a>
+            <a class="btn btn-sm btn-danger pull-right" ng-click="sub.openReturnModal(submitted)">
+                <i class="glyphicon glyphicon-remove"></i></a>
+            <a class="btn btn-sm btn-success pull-right" ng-click="sub.openPublishModal(submitted)">
+                <i class="glyphicon glyphicon-ok"></i></a>
+        </div>
+        <div class="panel" ui-sref="lessons.view({ lessonId: submitted._id })">
+            <div class="panel-heading" style="background: #fcfcfc; border-bottom-color: #ddd;">
+                <p class="panel-title" style="color: {{unit.color}}" ng-repeat="unit in submitted.units" ng-show="unit">
+                    <i class="{{unit.icon}}"></i>
+                    <b>{{unit.title}}</b>
+                </p>
+            </div>
+            <div class="panel-body">
+                <h4><b>{{submitted.title}}</b></h4>
+                <p class="text-muted">
+                    <small ng-show="submitted.lessonOverview.setting"><b>{{submitted.lessonOverview.setting}}</b> setting</small>
+                    <small ng-show="submitted.lessonOverview.setting && submitted.lessonOverview.grade" class="gray">&nbsp;&nbsp;|&nbsp;&nbsp;</small>
+                    <small ng-show="submitted.lessonOverview.grade"><b>{{submitted.lessonOverview.grade}}</b> grade</small>
+                </p>
+                <p class="small">
+                    <span ng-bind-html="submitted.lessonOverview.lessonSummary | limitTo:200 | sanitize"></span>
+                    <span ng-show="submitted.lessonOverview.lessonSummary.length > 200">...</span>
+                </p>
+                <img ng-show="submitted.featuredImage" ng-src="{{submitted.featuredImage.path}}" class="img-responsive" />
+            </div>
+            <div class="panel-footer">
+                <ul class="list-inline">
+                  <li ng-repeat="subject in submitted.lessonOverview.subjectAreas">
+                      <span ng-style="{'background-color':'{{subject.color}}'}" ng-bind="subject.subject"
+                      class="label label-default"></span>
+                  </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-info text-center" ng-if="sub.submittedLessons.$resolved && sub.submittedLessons.length == 0">
+    No lessons waiting for approval! As soon as a team lead submits one, it will show up here.
+</div>
+</div>
+
+<!-- Modals -->
+<return-lesson lesson="sub.lesson" close-function="sub.closeReturnModal"></return-lesson>
+<publish-lesson lesson="sub.lesson" close-function="sub.closePublishModal"></publish-lesson>

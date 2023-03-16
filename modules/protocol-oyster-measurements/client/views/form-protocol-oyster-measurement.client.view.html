@@ -1,0 +1,172 @@
+<form name="form.oysterMeasurementForm" ng-submit="save(form.oysterMeasurementForm.$valid)" novalidate ng-cloak>
+    <section class="content">
+        <section class="container">
+            <h2 id="protocol-2-form">Protocol 2 <small>Oyster Measurements</small></h2>
+            <ul>
+                <li>To publish this protocol <strong>the first time you enter data</strong>, you'll need to enter a set of baselines for each of the 10 tagged substrate shells. You can find much of the baseline information on the tag of each substrate shell.</li>
+                <li>To publish this protocol <strong>every time after</strong>, you'll only need to count the # of live oysters and measure the length of each live oyster for AT LEAST ONE substrate shell.</li>
+                <li>For reference, check out the updated
+                <a href="https://drive.google.com/drive/folders/0Bzf_STNcTtRmM2VubzJaM1dWZEU">Oyster Measurement Protocol</a>.</li>
+            </ul>
+            <hr />
+            <div class="alert alert-danger" ng-show="oysterMeasurementErrors" ng-cloak>
+                <h4>We're still missing some information.</h4>
+                <ul class="list-unstyled" ng-repeat="error in oysterMeasurementErrors">
+                    <li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error }}</li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="collectionTime">Date and time of data collection</label>
+                        <input type="datetime-local" class="form-control" name="collectionTime"
+                        placeholder="yyyy-MM-ddTHH:mm:ss" min="{{dateTime.min}}" max="{{dateTime.max}}"
+                        ng-model="oysterMeasurement.collectionTime" />
+                        <div ng-show="form.oysterMeasurementForm.collectionTime.$error.min">
+                            <p class="red">Collection time must not be more than a year in the past.</p>
+                        </div>
+                        <div ng-show="form.oysterMeasurementForm.collectionTime.$error.max">
+                            <p class="red">Collection time must not be more than a year in the future.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select-tags outer-column="" name="teamMembers"
+                        in-title="Names of team members" ng-model="oysterMeasurement.teamMembers"
+                        label-class="control-label" select-config="teamMemberSelectConfig" ></select-tags>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label>Notes or other observations</label>
+                        <textarea class="form-control" rows="7" ng-model="oysterMeasurement.notes" ></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    <section class="content shaded">
+        <section class="container">
+            <div class="row">
+                <h6>Condition of oyster cage</h6>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label for="bioaccumulation">Bioaccumulation on cage</label>
+                        <br/>
+                        <div class="custom-control custom-radio" ng-repeat="bioaccumulation in bioaccumulations track by $index">
+                            <input
+                                class="custom-control-input"
+                                type="radio"
+                                name="bioaccumulation"
+                                id="{{ bioaccumulation.value }}"
+                                value="{{ bioaccumulation.value }}"
+                                ng-model="oysterMeasurement.conditionOfOysterCage.bioaccumulationOnCage"
+                            >
+                            <label
+                                class="custom-control-label w-100"
+                                for="{{ bioaccumulation.value }}"
+                                style="font-weight: normal !important"
+                                ng-class="{'active': (oysterMeasurement.conditionOfOysterCage.bioaccumulationOnCage === bioaccumulation.value) }"
+                            >
+
+                            {{ bioaccumulation.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+<!--
+                    <div class="form-group">
+                        <label for="bioaccumulation" class="control-label">Bioaccumulation on cage</label>
+                        <select class="form-control" ng-options="bioaccumulation.value as bioaccumulation.label for bioaccumulation in bioaccumulations" ng-model="oysterMeasurement.conditionOfOysterCage.bioaccumulationOnCage"  name="bioaccumulation" id="bioaccumulation"></select>
+                    </div>
+                    <div class="form-group">
+
+                        <label for="damage" class="control-label">Describe any damage to the cage</label>
+                        <textarea class="form-control" ng-model="oysterMeasurement.conditionOfOysterCage.notesOnDamageToCage" name="damage" id="damage"></textarea>
+                        -->
+                        <span class="help-block">Was the cage lost, destroyed or significantly damaged? <a class="btn btn-sm btn-danger pull-right" ng-click="openORSStatusForm()">Submit status update</a></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!--
+    <section class="content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>Measuring Oyster Growth</h6>
+                    <p class="lead blue">How to count oyster totals.</p>
+                    <p>There are 10 or fewer tagged substrate shells in your ORS. Enter baseline info for each substrate shell on the first expedition, or whenever a replacement shell is added. This info will not change unless new oysters are added. You will add photographs of every shell (both sides) at every expedition. You will also add measurements of all live oysters on the shell at every expedition. Only live oysters should be counted and measured. To count the total, start with the outer side of the shell, moving from the umbo to the bill, then flip the shell and repeat. </p>
+                </div>
+            </div>
+        </section>
+    </section>
+    -->
+
+
+    <section class="content">
+        <section class="container">
+            <h6>Oyster Measurements</h6>
+            <table class="table"><!-- TODO: Each opens its own modal. Once info is entered in the modal, min/max/avg/alive is calculated and displayed here -->
+                <tr ng-repeat="substrate in oysterMeasurement.measuringOysterGrowth.substrateShells"
+                ng-class="{red: form.oysterMeasurementForm.$submitted && !substratesValid &&
+                  (substrate.totalNumberOfLiveOystersOnShell < 0 || substrate.totalNumberOfLiveOystersOnShell === undefined)}">
+                    <td>
+                        <h4><i class="glyphicon glyphicon-ok-sign green" ng-show="checkDone(substrate)"></i> Substrate Shell {{substrate.substrateShellNumber}}</h4>
+                    </td>
+                    <td>
+                        <a class="btn btn-default pull-right" data-target="#modal-substrateshell{{$index}}" ng-click="openSubstrateForm($index)" ng-disabled="saving" id="edit-measurements-{{$index}}">Edit measurements</a>
+                        <span class="text-muted" ng-show="substrate.minimumSizeOfLiveOysters >= 0 || substrate.maximumSizeOfLiveOysters >= 0 || substrate.averageSizeOfLiveOysters >= 0 || substrate.totalNumberOfLiveOystersOnShell">
+                            Minimum size <b>{{substrate.minimumSizeOfLiveOysters | number:2}}</b>,
+                            Maximum size <b>{{substrate.maximumSizeOfLiveOysters | number:2}}</b>,
+                            Average size <b>{{substrate.averageSizeOfLiveOysters | number:2}}</b>,
+                            Total Alive <b>{{substrate.totalNumberOfLiveOystersOnShell | number}}</b>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </section>
+    </section>
+    <section class="content shaded">
+        <section class="container">
+            <p class="lead blue" ng-show="oysterMeasurement.minimumSizeOfAllLiveOysters || oysterMeasurement.maximumSizeOfAllLiveOysters ||
+            oysterMeasurement.averageSizeOfAllLiveOysters || oysterMeasurement.totalNumberOfAllLiveOysters">
+            Great work! Of the total population, the
+                minimum shell size is <b>{{oysterMeasurement.minimumSizeOfAllLiveOysters | number:2}} mm</b>,
+                maximum size is <b>{{oysterMeasurement.maximumSizeOfAllLiveOysters | number:2}} mm</b>,
+                average size is <b>{{oysterMeasurement.averageSizeOfAllLiveOysters | number:2}} mm</b>, and
+                total oysters alive is <b>{{oysterMeasurement.totalNumberOfAllLiveOysters | number}}</b>.</p>
+              <p ng-show="previous &&
+              previous.totalNumberOfAllLiveOysters === oysterMeasurement.totalNumberOfAllLiveOysters">
+              Compared to your last expedition, your oyster population has stayed the same.</p>
+            <p ng-show="previous">
+              Since your last expedition, your oyster population has experienced a mortality rate of
+              <b>{{previous.mortality}}%</b> </span>
+              and a growth rate of <b>{{previous.growth}}%</b>. </span>
+              The minimum shell size has
+              <span ng-show="previous.min >= 0">increased <b>{{previous.min}}%</b>, </span>
+              <span ng-show="previous.min < 0">decreased <b>{{previous.min}}%</b>, </span>
+              and the maximum shell size has
+              <span ng-show="previous.max >= 0">increased <b>{{previous.max}}%</b>.</span>
+              <span ng-show="previous.max < 0">decreased <b>{{previous.max}}%</b>.</span>
+            </p>
+        </section>
+    </section>
+</form>
+
+<!-- MODALS -->
+<form-substrate-shell ng-repeat="substrate in oysterMeasurement.measuringOysterGrowth.substrateShells"
+substrate="substrate" baseline="station.baselinesArray[$index]" station-id="{{station._id}}" max-live-oysters="liveShellCount"
+outer-substrate-uploader="outerUploaders[$index]" inner-substrate-uploader="innerUploaders[$index]"
+outer-substrate-url="outerSubstrateURL" inner-substrate-url="innerSubstrateURL"
+save-function="saveSubstrateForm" cancel-function="cancelSubstrateForm" index="{{$index}}"></form-substrate-shell>
+
+<map-select modal-id="modal-oyster-measurement-map" latitude="oysterMeasurement.latitude"
+  longitude="oysterMeasurement.longitude" can-geocode="true" can-click-map-to-add-marker="true"
+  can-move-marker="true" show-marker="true" dismiss-function="closeMap"></map-select>
+
+<form-restoration-station-status-popup station="station" close-function="closeORSStatusForm"></form-restoration-station-status-popup>

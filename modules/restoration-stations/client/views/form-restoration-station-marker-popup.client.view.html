@@ -1,0 +1,16 @@
+<div>
+  <image ng-show="photoUrl" ng-src="{{photoUrl}}" class="img-thumbnail" width="100%">
+
+  <span class="label"
+  ng-class="{ 'label-success': station.status === 'Active', 'label-danger': station.status !== 'Active' }">
+  {{station.status}}</span>
+
+  <h4 class="blue">{{station.name}}</h4>
+  <p>
+    {{station.bodyOfWater}}<br/>
+    <span class="text-muted" ng-show="teamLead">by {{teamLead}} from </span>
+    <span class="text-muted" ng-show="schoolOrg">{{schoolOrg}}</span>
+  </p>
+
+  <a class="btn btn-block btn-default" ng-click="openView(station)">See more</a>
+</div>

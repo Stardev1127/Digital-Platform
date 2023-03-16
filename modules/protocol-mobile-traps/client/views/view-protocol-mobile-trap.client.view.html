@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-sm-3">
+        <h3 class="blue">
+            <i class="fa fa-clock-o pull-left"></i>
+            {{vm.getTime(mobileTrap.collectionTime)}}<br/>
+            <small>{{vm.getDate(mobileTrap.collectionTime)}}</small>
+        </h3>
+        <h4 class="blue">
+            <i class="fa fa-map-marker pull-left"></i>
+            <small>{{mobileTrap.latitude}}, {{mobileTrap.longitude}}</small>
+        </h4>
+    </div>
+    <div class="col-sm-3" ng-repeat="member in oysterMeasurement.teamMembers"
+      ng-show="oysterMeasurement.teamMembers && oysterMeasurement.teamMembers.length > 0">
+        <h5>
+            <a ng-click="vm.openViewUserModal(member)">
+                <img class="header-profile-image" ng-src="{{member.profileImageURL}}"> {{member.displayName}}
+            </a>
+        </h5>
+    </div>
+    <div class="col-sm-6" ng-show="mobileTrap.notes">
+        <p><b>Notes:</b> {{mobileTrap.notes}}</p>
+    </div>
+</div>
+<hr/>
+<div class="row" ng-repeat="organism in foundOrganisms" ng-show="{{organism.count > 0}}">
+    <h3 class="col-sm-12" id="mobileOrganismCount{{$index}}">{{organism.count}} <small>{{(organism.organism.commonName === 'Other/Unknown' && organism.alternateName) ? organism.alternateName : organism.organism.commonName}}</small></h3>
+    <div class="col-sm-3">
+        <img id="organismSketchPhoto{{$index}}" class="img-thumbnail img-responsive"
+        ng-src="{{(organism.sketchPhoto && organism.sketchPhoto.path) ? organism.sketchPhoto.path : organism.organism.image.path}}" />                      
+    </div>
+    <div class="col-sm-9">
+        <p ng-hide="organism.organism.commonName === 'Other/Unknown'">
+            <em class="text-muted" ng-bind="organism.organism.latinName"></em><br />
+            <span ng-bind="organism.description"></span><br ng-show="organism.description" />
+            <span class="label label-default" ng-bind="organism.organism.category"></span><br />
+            <span ng-bind="organism.organism.nativeIntroduced"></span><br />
+            <span><b>Habitat:</b> {{organism.organism.habitat}}</span><br />
+            <span><b>Diet:</b> {{organism.organism.diet}}</span><br />
+            <span><b>Morphology notes:</b> {{organism.organism.morphologyNotes}}</span>
+        </p>
+        <p id="mobileOrganismNotes{{$index}}" ng-show="organism.notes"><b>Notes:</b> {{organism.notes}}</p>
+    </div>
+    <div class="col-sm-12">
+        <hr/>
+    </div>
+</div>

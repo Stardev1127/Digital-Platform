@@ -1,0 +1,56 @@
+<section class="content shaded">
+    <section class="container-fluid">
+        <h2>Metrics</h2>
+    </section>
+</section>
+<section class="content shaded content-unpadded" ng-controller="SettingsController">
+    <section class="container-fluid">
+      <div>
+        <div class="pull-right" ng-show="vm.isAdmin">
+          <span uib-dropdown is-open="vm.status.isopen">
+            <a class="btn btn-lg btn-success dropdown-toggle" href="#" id="simple-dropdown" uib-dropdown-toggle>
+              Download Metrics
+            </a>
+            <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
+              <li><a ng-href="api/metrics/download/events" target="_blank">Events</a></li>
+              <li><a ng-href="api/metrics/download/expeditions" target="_blank">Expeditions</a></li>
+              <li><a ng-href="api/metrics/download/lessons" target="_blank">Lessons</a></li>
+              <li><a ng-href="api/metrics/download/organizations" target="_blank">Organizations</a></li>
+              <li><a ng-href="api/metrics/download/team-leads" target="_blank">Team Leads</a></li>
+              <li><a ng-href="api/metrics/download/team-members" target="_blank">Team Members</a></li>
+              <li><a ng-href="api/metrics/download/misc" target="_blank">Miscellaneous</a></li>
+            </ul>
+          </span>
+        </div>
+        <br/>
+      </div>
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active">
+                <a href="#people" data-toggle="tab" aria-controls="people" role="tab">Community</a>
+            </li>
+            <li role="presentation">
+                <a href="#curriculum" data-toggle="tab" aria-controls="curriculum" role="tab">Curriculum</a>
+            </li>
+            <li role="presentation">
+                <a href="#stations" data-toggle="tab" aria-controls="stations" role="tab">Restoration</a>
+            </li>
+            <li role="presentation">
+                <a href="#events" data-toggle="tab" aria-controls="events" role="tab">Events</a>
+            </li>
+        </ul>
+    </section>
+</section>
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="people">
+        <view-people-metrics></view-people-metrics>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="curriculum">
+        <view-curriculum-metrics></view-curriculum-metrics>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="stations">
+        <view-station-metrics></view-station-metrics>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="events">
+      <view-event-metrics></view-event-metrics>
+    </div>
+</div>
